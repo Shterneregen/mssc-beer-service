@@ -5,7 +5,6 @@ import guru.springframework.msscbeerservice.bootstrap.BeerLoader;
 import guru.springframework.msscbeerservice.services.BeerService;
 import guru.springframework.msscbeerservice.web.model.BeerDto;
 import guru.springframework.msscbeerservice.web.model.BeerStyleEnum;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -27,37 +27,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BeerControllerTest {
 
     @Autowired
-    private MockMvc mockMvc;
+    MockMvc mockMvc;
+
     @Autowired
-    private ObjectMapper objectMapper;
+    ObjectMapper objectMapper;
+
     @MockBean
-    private BeerService beerService;
-
-    private BeerDto validBeer;
-
-    @BeforeEach
-    void setUp() {
-        validBeer = BeerDto.builder()
-                .beerName("New Beer")
-                .beerStyle(BeerStyleEnum.ALE)
-                .upc(BeerLoader.BEER_1_UPC)
-                .price(new BigDecimal("12.25"))
-                .build();
-    }
+    BeerService beerService;
 
     @Test
     void getBeerById() throws Exception {
-        given(beerService.getById(any())).willReturn(validBeer);
-        mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID().toString())
-                .accept(MediaType.APPLICATION_JSON))
+
+        given(beerService.getById(any(), anyBoolean())).willReturn(getValidBeerDto());
+
+        mockMvc.perform(get("/api/v1/beer/" + UUID.randomUUID().toString()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
 
     @Test
     void saveNewBeer() throws Exception {
-        String beerDtoJson = objectMapper.writeValueAsString(validBeer);
-        given(beerService.saveNewBeer(any())).willReturn(validBeer);
-        mockMvc.perform(post("/api/v1/beer")
+
+        BeerDto beerDto = getValidBeerDto();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        given(beerService.saveNewBeer(any())).willReturn(getValidBeerDto());
+
+        mockMvc.perform(post("/api/v1/beer/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isCreated());
@@ -65,11 +60,23 @@ class BeerControllerTest {
 
     @Test
     void updateBeerById() throws Exception {
-        given(beerService.updateBeer(any(), any())).willReturn(validBeer);
-        String beerDtoJson = objectMapper.writeValueAsString(validBeer);
+        given(beerService.updateBeer(any(), any())).willReturn(getValidBeerDto());
+
+        BeerDto beerDto = getValidBeerDto();
+        String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
         mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
                 .andExpect(status().isNoContent());
+    }
+
+    BeerDto getValidBeerDto(){
+        return BeerDto.builder()
+                .beerName("My Beer")
+                .beerStyle(BeerStyleEnum.ALE)
+                .price(new BigDecimal("2.99"))
+                .upc(BeerLoader.BEER_1_UPC)
+                .build();
     }
 }
