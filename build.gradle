@@ -32,6 +32,9 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-actuator",
             "org.springframework.boot:spring-boot-starter-data-jpa",
             "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-cache",
+            "javax.cache:cache-api",
+            "org.ehcache:ehcache",
             "org.mapstruct:mapstruct:$mapstructVersion"
     )
     compileOnly "org.projectlombok:lombok"
