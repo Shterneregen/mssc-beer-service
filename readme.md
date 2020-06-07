@@ -2,7 +2,12 @@
 
 # MSSC Beer Service
 
-Spring Boot Microservice example
+[Dockerfile for the ActiveMQ Artemis Project](https://github.com/vromero/activemq-artemis-docker)
+```console
+docker run -it --rm -p 8161:8161 -p 61616:61616 vromero/activemq-artemis
+``` 
+Credentials: 
+`artemis` / `simetraehcapa`
 
 ---
 * Original repo:
