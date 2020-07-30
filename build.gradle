@@ -35,6 +35,7 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-validation",
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client",
+            "org.springframework.cloud:spring-cloud-starter-openfeign",
             "javax.cache:cache-api",
             "org.ehcache:ehcache",
             "org.mapstruct:mapstruct:$mapstructVersion"
